@@ -5,7 +5,16 @@ mongoose.connect("mongodb://localhost:27017/playground").then(() => {
 });
 
 const courseSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+    // only these enum value will be required for this category
+    enum: ['web', 'mobile', 'network'],
+    required: true,
+  },
   author: String,
   tags: [String],
   date: {
@@ -13,31 +22,44 @@ const courseSchema = new mongoose.Schema({
     default: Date.now,
   },
   isPublished: Boolean,
+  price: {
+    type: Number,
+    required: function () {
+      return this.isPublished;
+    },
+  },
 });
 
 const Course = mongoose.model("Course", courseSchema);
 
 const course = new Course({
-  name: "Nodejs course",
+  name: 'Shubham',
   author: "Mosh",
+  category: 'web',
   tags: ["Node", "MongoDB", "Express"],
-  isPublished: false,
+  isPublished: true,
+  // price: 10,
 });
 
-// this is an asynchronous operation i.e we don't know how much time it would take to save this to DB that's why it returns a promise
-// course.save().then((result) => {
-//   console.log({ result });
-// });
+(async function () {
+  try {
+    console.log("RUN");
+    await course.validate();
+    // this is an asynchronous operation i.e we don't know how much time it would take to save this to DB that's why it returns a promise
 
-
-(async function getCourses() {
-    const courses = await Course
-    .find({ }) // this find() method returns a DocumentQuery object that's why we can apply chaining query to the find method 
-    .or([{author: {$in: ['Mosh']}}])
-    .limit(10)
-    .sort({name: 1});
-    console.log({courses});
+    await course.save();
+  } catch (error) {
+    console.log("===========>", error.message);
+  }
 })();
+
+// (async function getCourses() {
+//   const courses = await Course.find({}) // this find() method returns a DocumentQuery object that's why we can apply chaining query to the find method
+//     .or([{ author: { $in: ["Mosh"] } }])
+//     .limit(10)
+//     .sort({ name: 1 });
+//   console.log({ courses });
+// })();
 
 /*
 
