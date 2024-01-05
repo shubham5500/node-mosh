@@ -16,7 +16,18 @@ const courseSchema = new mongoose.Schema({
     required: true,
   },
   author: String,
-  tags: [String],
+  tags: {
+    type: Array,
+    validate: {
+      isAsync: true,
+      validator: function(v) {
+        setTimeout(() => {
+          return Promise.resolve(v && v.length > 0)
+        }, 4000);
+      },
+      message: 'A course should have at least one tag.'
+    }
+  },
   date: {
     type: Date,
     default: Date.now,
@@ -36,9 +47,9 @@ const course = new Course({
   name: 'Shubham',
   author: "Mosh",
   category: 'web',
-  tags: ["Node", "MongoDB", "Express"],
+  tags: null,
   isPublished: true,
-  // price: 10,
+  price: 10,
 });
 
 (async function () {

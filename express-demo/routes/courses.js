@@ -24,7 +24,7 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
   if (validateCourse(req.body).error) {
-    return res.status(400).send(result.error);
+    return res.status(400).send(validateCourse(req.body).error);
   }
   const post = {
     id: courses.length + 1,
@@ -44,7 +44,7 @@ router.put("/:id", (req, res) => {
   }
 
   if (validateCourse(req.body).error) {
-    return res.status(400).send(result.error);
+    return res.status(400).send(validateCourse(req.body).error);
   }
   course.course = req.body.name;
   res.status(200).send(course);

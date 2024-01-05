@@ -43,5 +43,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(process.env.PORT, () => {
-  console.log("LISTENING ON 3000");
+  console.log("LISTENING ON :", process.env.PORT);
 });
